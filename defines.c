@@ -8,7 +8,7 @@ volatile uint32_t delay = 0;
 
 void just_delay()
 {
-	ui16 i;
+	uint16_t i;
 
 	for(i = 0; i < 100; ++i)
 	{
@@ -16,24 +16,11 @@ void just_delay()
 	}
 }
 
-#ifdef US_DELAY
-void delay_us(uint32_t us)
+static float map(uint32_t val, uint32_t from_min, uint32_t from_max, uint32_t to_min, uint32_t to_max)
 {
-	delay = us;
-
-	HAL_TIM_Base_Start_IT(&htim4);
-	
-	while(delay);
-
-	HAL_TIM_Base_Stop_IT(&htim4);
+	return 1.0 * (val - from_min) * (to_max - to_min) / (from_max - from_min) + to_min;
 }
 
-void HAL_TIM_PeriodElapsedCallback()
-{
-	if (htim->Instance == TIM4)
-		--delay;
-}
-#endif
 
 char *multi_tok(char *input, char *delimiter)
 {
